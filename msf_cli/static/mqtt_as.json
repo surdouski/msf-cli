@@ -1,0 +1,19 @@
+{
+  "client_id": "foo-client-01",
+  "server": "<required>",
+  "port": 0,
+  "ssid": null,
+  "wifi_pw": null,
+  "user": "",
+  "password": "",
+  "keepalive": 60,
+  "ping_interval": 0,
+  "ssl": false,
+  "ssl_params": {},
+  "response_time": 10,
+  "clean_init": true,
+  "clean": true,
+  "max_repubs": 4,
+  "will": null,
+  "queue_len": 1
+}

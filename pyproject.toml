@@ -1,9 +1,14 @@
 [tool.poetry]
 name = "msf-cli"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["surdouski <michael.surdouski@gmail.com>"]
 readme = "README.md"
+include = [
+    "msf_cli/static/mqtt_as.json",
+    "msf_cli/static/main.py",
+    "msf_cli/static/settings.py"
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"

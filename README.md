@@ -20,7 +20,19 @@ msf broker down              # stops the local MQTT broker
 
 ### $ msf new path
 
-Not implemented yet, just creates a new empty directory at path at the moment.
+Creates a new project at `<path>`. This is a convenience utility to set up your project so that it's easy to begin
+development. However, it does also include some of the things you do require, such as the `.config/mqtt_as.json`
+file with some defaults (although at minimum you need to update the "server" value). It also installs the framework and
+it's required dependencies.
+
+An example of what the directory looks like after being run:
+
+![img.png](img.png)
+
+After updating the json, you can uncomment
+out the code in `main.py` related to the device and settings setup to test that everything is working. A simple way to
+do this is to navigate to the project path, do `mpbridge dev a0`, wait for everything to load then press `<Enter>` once,
+then press `<ctrl+d>` to do a soft restart on the device so that it runs `main.py`.
 
 ### $ msf broker up
 
@@ -37,6 +49,10 @@ msf broker up
 # output: Local MQTT broker started at 192.168.x.x:1883.
 ```
 
-### msf broker down
+### $ msf broker down
 
 Stops and removes the broker.
+
+## Tests (Development)
+
+Will eventually put up a test harness for this and add it to workflows. Today, however, is not that day.
