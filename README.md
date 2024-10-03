@@ -91,7 +91,7 @@ MQTT_SERVER_PASS=mypass  # optional, but required if user is specified
 
 ```bash
 # list devices
-dops devices
+msf devices
 ```
 
 ![devices-list.png](devices-list.png)
@@ -101,7 +101,7 @@ dops devices
 
 ```bash
 # list settings for a device
-dops devices <device_id>
+msf devices <device_id>
 ```
 
 ![get-device_id.png](get-device_id.png)
@@ -110,7 +110,7 @@ dops devices <device_id>
 
 ```bash
 # show a specific setting
-dops devices <device_id> <setting_id>
+msf devices <device_id> <setting_id>
 ```
 
 ![get-device-setting.png](get-device-setting.png)
@@ -119,7 +119,7 @@ dops devices <device_id> <setting_id>
 
 ```bash
 # update the value of a setting
-dops devices <device_id> <setting_id> [--set]/[-s] <value>
+msf devices <device_id> <setting_id> [--set]/[-s] <value>
 ```
 
 ![set-device-setting.png](set-device-setting.png)
