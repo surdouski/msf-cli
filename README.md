@@ -118,8 +118,7 @@ dops devices <device_id> <setting_id>
 #### set device setting
 
 ```bash
-# update the value of a setting (both --set and --type are required)
-# valid options for [--type] : --type=float,str,bytes,bytearray
+# update the value of a setting
 dops devices <device_id> <setting_id> [--set]/[-s] <value>
 ```
 
