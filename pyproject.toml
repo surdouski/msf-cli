@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "msf-cli"
-version = "0.1.1"
+version = "0.2.0"
 description = ""
 authors = ["surdouski <michael.surdouski@gmail.com>"]
 readme = "README.md"
@@ -13,6 +13,10 @@ include = [
 [tool.poetry.dependencies]
 python = "^3.10"
 click = "^8.1.7"
+rich = "^13.9.1"
+paho-mqtt = "1.6.1"
+python-dotenv = "^1.0.1"
+sniffs = "^0.6.2"
 
 [tool.poetry.scripts]
 msf = "msf_cli.cli:cli"
