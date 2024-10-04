@@ -11,6 +11,9 @@ from dotenv import load_dotenv
 
 from sniffs import Sniffs
 
+load_dotenv(".config")
+load_dotenv(".secrets")
+
 console = Console()
 devices_dict = {}
 sniffs = Sniffs()
@@ -27,14 +30,6 @@ class Clr:
 def dops():
     """Device Operations Command Line Interface"""
     pass
-
-
-@dops.command()
-def auth():
-    """Check current authentication details."""
-    secrets = load_dotenv(".secrets")
-    for key, val in secrets.items():
-        print(f"{key}: {val}")
 
 
 @dops.command()
@@ -58,12 +53,11 @@ def devices(device_id, setting_id, new_value):
         nonlocal print_settings_string
         print_settings_string += f"[orange3]{setting_key}[/orange3][magenta]:[/magenta] [bright_white]{setting_value}[magenta];[/magenta] "
 
-    # Load environment variables here
-    load_dotenv(".config")
+    # load_dotenv(".config")
     _devices_topic = os.getenv("MQTT_DEVICES_TOPIC", "test/devices")
     add_print_setting("MQTT_DEVICES_TOPIC", _devices_topic)
 
-    load_dotenv(".secrets")
+    # load_dotenv(".secrets")
     _user = os.getenv("MQTT_SERVER_USER")
     if _user:
         add_print_setting("MQTT_SERVER_USER", _user)
@@ -82,6 +76,7 @@ def devices(device_id, setting_id, new_value):
 
     # Setup MQTT
     def run_client() -> mqtt.Client:
+        nonlocal client
         client = mqtt.Client(client_id="dops_client")
         if _user and _password:
             client.username_pw_set(_user, password=_password)
@@ -94,13 +89,46 @@ def devices(device_id, setting_id, new_value):
         return client
 
     # Define MQTT routes within the command
-    @sniffs.route(_devices_topic.rstrip("/").lstrip("/") + "/<device_id>/<setting>")
-    def device_settings(device_id, setting, message):
+    @sniffs.route(_devices_topic.rstrip("/").lstrip("/") + "/<device_id>/<setting>/<config>:{type,description,value}")
+    def client_reported_device_setting_value(device_id, setting, config, message):
         if isinstance(message, bytes):
             message = message.decode()
         if device_id not in devices_dict:
             devices_dict[device_id] = {}
-        devices_dict[device_id][setting] = message
+        if setting not in devices_dict[device_id]:
+            devices_dict[device_id][setting] = {}
+
+        if config == "type":
+            devices_dict[device_id][setting]["type"] = message
+        elif config == "description":
+            devices_dict[device_id][setting]["description"] = message
+        elif config == "value":
+            devices_dict[device_id][setting]["client_reported_value"] = message
+
+    # Define MQTT routes within the command
+    @sniffs.route(_devices_topic.rstrip("/").lstrip("/") + "/<device_id>/<setting>/value/reported")
+    def self_reported_device_setting_value(device_id, setting, message):
+        if isinstance(message, bytes):
+            message = message.decode()
+        if device_id not in devices_dict:
+            devices_dict[device_id] = {}
+        if setting not in devices_dict[device_id]:
+            devices_dict[device_id][setting] = {}
+        devices_dict[device_id][setting]["device_reported_value"] = message
+
+    # devices_dict structure
+    """
+    {
+        "device_name": {
+            "setting_name": {
+                "type": "int",
+                "description": "the description",
+                "client_reported_value": "foo",
+                "device_reported_value": "bar"
+            }
+        }
+    }
+    """
 
     # Call the client
     client = run_client()
@@ -138,21 +166,33 @@ def devices(device_id, setting_id, new_value):
         table = Table(title=f"Device: [{Clr.dev}]{device_id}[/{Clr.dev}]")
         table.add_column("Setting", style=Clr.set)
         table.add_column("Value", style=Clr.val)
-        for setting, value in device.items():
-            table.add_row(setting, value)
+        table.add_column("Type", style=Clr.val)
+        table.add_column("Description", style=Clr.val)
+        for setting, setting_dict in device.items():
+            client_reported = setting_dict.get("client_reported_value")
+            device_reported = setting_dict.get("device_reported_value")
+            value = client_reported if client_reported else device_reported
+            table.add_row(setting, value, setting_dict.get("type"), setting_dict.get("description"))
         console.print(table)
 
     elif is_command_get_device_setting:
         table = Table(title=f"Device: [{Clr.dev}]{device_id}[/{Clr.dev}]")
         table.add_column("Setting", style=Clr.set)
         table.add_column("Value", style=Clr.val)
+        table.add_column("Type", style=Clr.val)
+        table.add_column("Description", style=Clr.val)
 
-        table.add_row(setting_id, device.get(setting_id))
+        # table.add_row(setting_id, device.get(setting_id))
+        setting_dict = device.get(setting_id)
+        client_reported = setting_dict.get("client_reported_value")
+        device_reported = setting_dict.get("device_reported_value")
+        value = client_reported if client_reported else device_reported
+        table.add_row(setting_id, value, setting_dict.get("type"), setting_dict.get("description"))
 
         console.print(table)
 
     elif is_command_set_device_setting:
-        topic = f"{_devices_topic}/{device_id}/{setting_id}"
+        topic = f"{_devices_topic}/{device_id}/{setting_id}/value"
         client.publish(topic, new_value, retain=True)
         client.loop_start()
         time.sleep(0.5)
@@ -161,8 +201,14 @@ def devices(device_id, setting_id, new_value):
         table = Table(title=f"Device: [{Clr.dev}]{device_id}[/{Clr.dev}]")
         table.add_column("Setting", style=Clr.set)
         table.add_column("Value", style=Clr.val)
+        table.add_column("Type", style=Clr.val)
+        table.add_column("Description", style=Clr.val)
 
-        table.add_row(setting_id, device.get(setting_id))
+        setting_dict = device.get(setting_id)
+        client_reported = setting_dict.get("client_reported_value")
+        device_reported = setting_dict.get("device_reported_value")
+        value = client_reported if client_reported else device_reported
+        table.add_row(setting_id, value, setting_dict.get("type"), setting_dict.get("description"))
 
         console.print(table)
 

@@ -195,13 +195,13 @@ jupyter = ["ipywidgets (>=7.5.1,<9)"]
 
 [[package]]
 name = "sniffs"
-version = "0.6.2"
+version = "0.6.3"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.10"
 files = [
-    {file = "sniffs-0.6.2-py3-none-any.whl", hash = "sha256:daf01a5409da1cfea4f5d44df7fd27e134f03294b0c8907987ac2c82d604f3d2"},
-    {file = "sniffs-0.6.2.tar.gz", hash = "sha256:565f2e4f428fe9e745adc947a1c2a7ab4400cd77f947394f0b1f86ed8f096544"},
+    {file = "sniffs-0.6.3-py3-none-any.whl", hash = "sha256:a21ea124b7d63a2c78de642ce5d46820d89a94e321302bfbba491302f512e128"},
+    {file = "sniffs-0.6.3.tar.gz", hash = "sha256:22598fcd8bffa8ee1361a8f3574fb21661702d40df3a3d3eea1cd4411f7d405b"},
 ]
 
 [package.dependencies]
