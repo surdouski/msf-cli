@@ -1,6 +1,6 @@
 # MSF CLI
 
-For use in creating and managing a project using the micropython-sniffs-framework: https://github.com/surdouski/micropython-sniffs-framework.
+The MSF CLI tool is designed for creating and managing projects using the MicroPython Sniffs Framework (MSF). You can find the framework repository here: https://github.com/surdouski/micropython-sniffs-framework.
 
 ## Installation
 
@@ -10,7 +10,7 @@ pipx install msf-cli
 
 ## Usage
 
-Note: docker must be installed and on path for broker commands.
+> Note: Note: Docker must be installed and available in your system path for broker commands to function.
 
 ### new
 
@@ -18,19 +18,13 @@ Note: docker must be installed and on path for broker commands.
 msf new <path>               # creates new msf project at <path>
 ```
 
-Creates a new project at `<path>`. This is a convenience utility to set up your project so that it's easy to begin
-development. However, it does also include some of the things you do require, such as the `.config/mqtt_as.json`
-file with some defaults (although at minimum you need to update the "server" value). It also installs the framework and
-it's required dependencies.
+The `new` command initializes a new project at `<path>`. It provides a convenient setup for starting development, including essential configuration files such as `.config/mqtt_as.json`, with default settings (note: updating the "server" field is necessary). Additionally, the framework and required dependencies are installed.
 
-An example of what the directory looks like after being run:
+Example directory structure after running this command:
 
 ![new-cmd.png](new-cmd.png)
 
-After updating the json, you can uncomment
-out the code in `main.py` related to the device and settings setup to test that everything is working. A simple way to
-do this is to navigate to the project path, do `mpbridge dev a0`, wait for everything to load then press `<Enter>` once,
-then press `<ctrl+d>` to do a soft restart on the device so that it runs `main.py`.
+Once configuration is updated, you can uncomment relevant code in `main.py` to test the device and settings setup. To run this, navigate to the project path, execute `mpbridge dev a0`, wait for initialization, press `<Enter>`, then press `<Ctrl+D>` for a soft restart to execute `main.py`.
 
 ### install
 
@@ -38,8 +32,7 @@ then press `<ctrl+d>` to do a soft restart on the device so that it runs `main.p
 msf install <package>
 ```
 
-This installs a micropython package to the current working directory's "lib" directory (creating "lib" if it does not exist).
-Uses the same package name syntax as expected by `mpremote`.
+This command installs a MicroPython package to the "lib" directory in the current working directory, creating "lib" if it does not exist. Package names follow the syntax expected by `mpremote`.
 
 Examples:
 
@@ -62,13 +55,9 @@ msf broker up
 # output: Local MQTT broker started at 192.168.x.x:1883.
 ```
 
-This command is meant for testing on your local network. If you already have a broker set up elsewhere that
-you want to use, use that instead.
+This command sets up a local MQTT broker for testing within your network. If you have an existing broker, feel free to use it instead.
 
-This command runs a `eclipse-mosquitto:1.6` container with some defaults. Can optionally add `--port` to specify
-a different port on your local machine you want to access it through.
-
-This command also outputs your IP and port you can connect to it through on your local network.
+The command launches an `eclipse-mosquitto:1.6` Docker container with default settings. You can use the optional `--port` parameter to specify a custom port. The command will output your local network IP and port information for connection.
 
 #### down
 
@@ -76,18 +65,18 @@ This command also outputs your IP and port you can connect to it through on your
 msf broker down
 ```
 
-Stops and removes the broker.
+Stops and removes the MQTT broker container.
 
 
 ### devices
 
-All configuration/secrets for can be passed as env vars on the cmdline...
+Device configurations and secrets can be passed as environment variables on the command line:
 
 ```bash
 MQTT_DEVICES_TOPIC=test/devices msf devices <cmd>
 ```
 
-... or in 2 configuration files, _.config_ and _.secrets_.
+Alternatively, you can specify configurations in two files: `.config` and `.secrets`.
 
 _.config_
 ```
@@ -142,4 +131,4 @@ msf devices <device_id> <setting_id> [--set]/[-s] <value>
 
 ## Tests (Development)
 
-Will eventually put up a test harness for this and add it to workflows. Today, however, is not that day.
+A test harness for this project is planned for future inclusion in workflows.
