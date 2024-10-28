@@ -1,4 +1,4 @@
-# MSF Cli
+# MSF CLI
 
 For use in creating and managing a project using the micropython-sniffs-framework: https://github.com/surdouski/micropython-sniffs-framework.
 
@@ -31,6 +31,22 @@ After updating the json, you can uncomment
 out the code in `main.py` related to the device and settings setup to test that everything is working. A simple way to
 do this is to navigate to the project path, do `mpbridge dev a0`, wait for everything to load then press `<Enter>` once,
 then press `<ctrl+d>` to do a soft restart on the device so that it runs `main.py`.
+
+### install
+
+```bash
+msf install <package>
+```
+
+This installs a micropython package to the current working directory's "lib" directory (creating "lib" if it does not exist).
+Uses the same package name syntax as expected by `mpremote`.
+
+Examples:
+
+```bash
+msf install pathlib
+msf install github:surdouski/micropython-sniffs
+```
 
 ### broker
 
